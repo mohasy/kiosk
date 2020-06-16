@@ -15,5 +15,10 @@ public class StoreController {
     public void home(){
         log.info("get home.............................");
     }
+
+    @GetMapping("/menu")
+    public void menu(){
+        log.info("get menu...............");
+    }
     
 }

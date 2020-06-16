@@ -1,11 +1,14 @@
 package com.grammer.kiosk.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.DynamicInsert;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +21,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString
+@ToString(exclude = "item")
+@DynamicInsert
 public class ItemImage {
 
     @Id
@@ -30,6 +34,7 @@ public class ItemImage {
 
     private String mname;//이미지 이름
 
+    @Column(columnDefinition = "varchar(1) default 'N'")
     private String mainCheck;//메인 이미지인지 체크 맞으면 'Y',아니면 'N'
 
     

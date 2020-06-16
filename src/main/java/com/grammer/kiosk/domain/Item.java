@@ -1,13 +1,18 @@
 package com.grammer.kiosk.domain;
 
-import java.time.LocalDateTime;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.DynamicInsert;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +25,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString
-public class Item {
+@ToString(exclude = "store")
+@DynamicInsert
+public class Item extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,10 +44,9 @@ public class Item {
     
     private String description;//부가설명
 
+    private String type; //카테고리
+
+    @Column(columnDefinition = "varchar(1) default 'Y'")
     private String state; //상태코드 (품절여부 등..)
-
-    private LocalDateTime regdate; //등록시간
-
-    private LocalDateTime moddate; //수정시간
 
 }

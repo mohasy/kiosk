@@ -4,7 +4,7 @@
     <meta name="keywords" content="Yoga, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Yummy | Template</title>
+    <title>Kiosk | Template</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap" rel="stylesheet">
@@ -27,24 +27,24 @@
     <header class="header-section">
         <div class="container">
             <div class="logo">
-                <a href="/./index.html"><img src="/img/logo.png" alt=""></a>
+                <a href="/store/home"><img src="/img/logo.png" alt=""></a>
             </div>
             <div class="nav-menu">
                 <nav class="main-menu mobile-menu">
                     <ul>
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#">Pages</a>
+                        <li th:class="${#httpServletRequest.requestURI.contains('home')} ? ' active' : ''"><a href="/store/home">Home</a></li>
+                        <li th:class="${#httpServletRequest.requestURI.contains('menu')} ? ' active' : ''"><a href="/store/menu">Menu</a>
                             <ul class="sub-menu">
-                                <li><a href="about-me.html">About Me</a></li>
-                                <li><a href="categories.html">Categories</a></li>
-                                <li><a href="recipe.html">Recipe</a></li>
-                                <li><a href="blog.html">Blog</a></li>
-                                <li><a href="contact.html">Contact</a></li>
+                                <li th:class="${#httpServletRequest.requestURI.contains('bestMenu')} ? ' active' : ''"><a th:href="@{/store/menu(type='best')}">Best</a></li>
+                                <li th:class="${#httpServletRequest.requestURI.contains('setMenu')} ? ' active' : ''"><a th:href="@{/store/menu(type='set')}">Set</a></li>
+                                <li th:class="${#httpServletRequest.requestURI.contains('home')} ? ' active' : ''"><a th:href="@{/store/menu(type='hamburger')}">Hamburger</a></li>
+                                <li th:class="${#httpServletRequest.requestURI.contains('home')} ? ' active' : ''"><a th:href="@{/store/menu(type='dessert')}">Dessert</a></li>
+                                <li th:class="${#httpServletRequest.requestURI.contains('home')} ? ' active' : ''"><a th:href="@{/store/menu(type='drink')}">Drink</a></li>
                             </ul>
                         </li>
-                        <li><a href="recipe.html">Recipes</a></li>
-                        <li><a href="categories.html">Best Of</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="${#httpServletRequest.requestURI.contains('order')} ? ' active' : ''">Order</a></li>
+                        <li><a href="${#httpServletRequest.requestURI.contains('contact')} ? ' active' : ''">Contact</a></li>
+                        <li><a href="${#httpServletRequest.requestURI.contains('help')} ? ' active' : ''">Help</a></li>
                     </ul>
                 </nav>
                 <div class="nav-right search-switch">
