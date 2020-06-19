@@ -34,7 +34,8 @@ public class StoreController {
         List<ItemDTO> itemList = itemService.getItems();
 
         model.addAttribute("itemList", itemList);
-        
     }
+
+    
     
 }

@@ -54,5 +54,9 @@ public class ItemImage {
     public void setMainCheck(String mainCheck){
         this.mainCheck = mainCheck;
     }
+
+    public void setItem(Item item){
+        this.item = item;
+    }
     
 }

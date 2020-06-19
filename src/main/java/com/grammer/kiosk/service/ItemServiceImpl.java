@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.grammer.kiosk.domain.Item;
+import com.grammer.kiosk.domain.ItemImage;
 import com.grammer.kiosk.dto.ItemDTO;
-import com.grammer.kiosk.dto.ItemImageDTO;
 import com.grammer.kiosk.repository.ItemRepository;
 
 import org.springframework.stereotype.Service;
@@ -39,11 +39,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void saveItem(ItemDTO itemDTO) {
         
-        for(ItemImageDTO imDTO: itemDTO.getImages()){
-            imDTO.setItem(itemDTO);
-        }
-        
         Item entity = bindToEntity(itemDTO);
+        
+        for(ItemImage im: entity.getImages()){
+            im.setItem(entity);
+        }
+
         
         itemRepository.save(entity);
     }

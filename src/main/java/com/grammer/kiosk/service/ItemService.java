@@ -46,9 +46,12 @@ public interface ItemService {
             .iname(dto.getIname())
             .price(dto.getPrice())
             .state(dto.getState())
+            .store(dto.getStore())
             .type(dto.getType())
             .images(dto.getImages().stream().map(fn).collect(Collectors.toList()))
             .build();
+
+            
     
             return entity;
         }
@@ -76,6 +79,7 @@ public interface ItemService {
             .iname(entity.getIname())
             .price(entity.getPrice())
             .state(entity.getState())
+            .store(entity.getStore())
             .type(entity.getType())
             .images(entity.getImages().stream().map(fn).collect(Collectors.toList()))
             .regdate(entity.getRegdate())

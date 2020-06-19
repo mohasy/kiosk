@@ -21,14 +21,7 @@ public class ItemServiceTests {
 
     @Test
     public void insertItemTest(){
-        //ItemDTO itemDTO = new ItemDTO();
-        
-        //ItemImageDTO imgDTO = new ItemImageDTO();
-       // List<ItemImageDTO> image = new ArrayList<ItemImageDTO>();
-        //image.add(imgDTO);
 
-        //itemDTO.setImages(image);
-        //entityManager.persist(itemDTO);
         Store store = Store.builder().sno(1L).build();
 
 
@@ -41,25 +34,22 @@ public class ItemServiceTests {
         .type("set")
         .build(); 
 
-        //ItemImageDTO image = new ItemImageDTO("az버거오리지날.jpg","Y",item);
-
         ItemImageDTO image = ItemImageDTO.builder()
         .mname("az버거오리지날.jpg")
         .mainCheck("Y")
         .item(item)
         .build();
         
-        item.addImages(image);
-
+        
         image.setItem(item);
-
+        item.addImages(image);
+        
         service.saveItem(item);
         
         
         log.info("item: "+item);
         log.info("img: "+image);
         
-
     }
 
 
@@ -69,7 +59,6 @@ public class ItemServiceTests {
 
         list.forEach(i -> {
            log.info(i.toString());
-            //log.info(i.getImages().toString());
         });
     }
 

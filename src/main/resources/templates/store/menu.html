@@ -22,7 +22,7 @@
         </div>
     </div>
     <!-- Hero Search Section End -->
-
+    
     <!-- Recipe Section Begin -->
     <section class="recipe-section spad">
         <div class="container">
@@ -30,33 +30,26 @@
             
             <div class="row">
                 <div th:each="item : ${itemList}">
-                    <th:block class="col-lg-4 col-sm-6">
-                    <div class="recipe-item">
-                        <a href="#" ><img th:src="@{'/img/'+${item.images.get(0).mname}}" alt=""> </a>
-                        <div class="ri-text">
-                            <div class="cat-name">Best</div>
-                            <a href="#">
-                                <h4 th:text="${item.iname}"></h4>
-                            </a>
-                            <p th:text="${item.price}+' won'"></p>
-                            <p th:text="${item.content}"></p>
+                    <div th:with="type = ${item.type eq 'hamburger'}">
+                        <div th:if="${type}">
+                            <th:block class="col-lg-4 col-sm-6">
+                                <div class="recipe-item">
+                                    <a href="#" th:onclick="'javascript:modalOpen('+this+');'"><img th:src="@{'/img/hamburger/'+${item.images.get(0).mname}}" alt=""> </a>
+                                    <div class="ri-text">
+                                        <div class="cat-name">Best</div>
+                                        <a href="#">
+                                            <h4 th:text="${item.iname}"></h4>
+                                        </a>
+                                        <p th:text="${item.price}+' won'"></p>
+                                        <p th:text="${item.content}"></p>
+                                    </div>
+                                </div>
+                            </th:block>
                         </div>
                     </div>
-                    </th:block>
                 </div>
             </div>
 
-            <!-- <div class="row">
-                <div class="col-lg-12">
-                    <div class="recipe-pagination">
-                        <a href="#" class="active">01</a>
-                        <a href="#">02</a>
-                        <a href="#">03</a>
-                        <a href="#">04</a>
-                        <a href="#">Next</a>
-                    </div>
-                </div>
-            </div> -->
 
 
         </div>
@@ -182,5 +175,66 @@
         </div>
     </section>
     <!-- Categories Feature Recipe Section End -->
+
+
+    <!--modal-->
+    <div class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">상세보기</h5>
+              <button type="button" class="close" th:onclick="'javascript:modalClose('+this+');'" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img th:src="@{'/img/hamburger/'+${itemList.get(0).images.get(0).mname}}">
+              <p th:text="${itemList.get(0).iname}"></p>
+              <p>[[${itemList.get(0).price}]] 원</p>
+              <p>[[${itemList.get(0).content}]]</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">Order</button>
+              <button type="button" class="btn btn-secondary" th:onclick="'javascript:modalClose('+this+');'" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      
+
+      <script type="text/javascript" th:inline="javascript">
+
+       
+        
+          var modalOpen = function(e){
+            console.log("click......"+e);
+            
+            $(".modal").modal("show");
+            $('html, body').css({'overflow': 'hidden', 'height': '100%'});
+            
+            $('#element').on('scroll touchmove mousewheel', function(event) {     
+                event.preventDefault();     
+                event.stopPropagation();     
+                
+                return false; 
+            });
+
+          };
+
+          var modalClose = function(e){
+            console.log("click......."+e);
+
+            $('html, body').css({'overflow': 'auto', 'height': '100%'});
+            $('#element').off('scroll touchmove mousewheel');
+
+          }
+
+        
+
+
+
+      </script>
 
     <footer th:replace="/includes/footer"/>

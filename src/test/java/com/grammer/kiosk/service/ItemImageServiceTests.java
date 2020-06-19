@@ -21,15 +21,6 @@ public class ItemImageServiceTests {
     @Test
     public void insertTest(){
 
-        // ItemImageDTO imgDTO = ItemImageDTO.builder()
-        //     .mainCheck("Y")
-        //     .mname("불고기버거3.jpg")
-        //     .itemno(5L)
-        //     .build();
-
-        // service.saveImg(imgDTO);
-
-
         ItemDTO item = ItemDTO.builder()    
         .content("최고 청정지역 호주 태즈매니아산 육즙 가득 순쇠고기 패티와 통밀발효종 효모가 사용되어 부드러운 브리오쉬 번 좋은 재료와 맛의 A to Z를 느낄 수 있는 프리미엄 제품")
         .description("")
@@ -40,16 +31,6 @@ public class ItemImageServiceTests {
         .build(); 
 
         log.info("1item: "+item);
-    
-        //ItemImageDTO image = new ItemImageDTO("az버거오리지날.jpg","Y");
-        
-        //item.getImages().add(image);
-        //image.setItem(item);
-
-
-        //service.saveImg(image);
-
-        
     }
 
     @Test
