@@ -15,8 +15,8 @@ public class StoreRepositoryTests {
     @Test
     public void insertDummies(){
         Store store = Store.builder()
-            .mname("hyerinCoffee").contact("01012740522").address("종로구 종각역 194호")
-            .businessNo("191674294").build();
+            .sname("sooburger").contact("01012740522").address("종로구 종각역 194호")
+            .businessNo("0148390183").build();
 
             storeRepository.save(store);
     }

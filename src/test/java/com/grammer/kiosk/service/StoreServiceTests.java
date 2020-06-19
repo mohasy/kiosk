@@ -1,9 +1,7 @@
 package com.grammer.kiosk.service;
 
-import java.util.Optional;
-import java.util.Set;
-
-import com.grammer.kiosk.domain.Store;
+import java.util.List;
+import com.grammer.kiosk.dto.StoreDTO;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +18,21 @@ public class StoreServiceTests {
 
     @Test
     public void getListTest() {
-        Set<Store> list = storeService.getStoreList();
-        log.info(list);
+        List<StoreDTO> list = storeService.getStoreList();
+        list.forEach(i ->{
+            log.info(i.toString());
+        });
     }
 
     @Test
     public void getTest(){
-        Optional<Store> store = storeService.getStore(1L);
-        log.info(store);
+
+        log.info(storeService.getStore(1L));
     }
 
     @Test
     public void insertTest(){
-        Store store = Store.builder()
+        StoreDTO store = StoreDTO.builder()
             .businessNo("2834902874")
             .address("관수동 382")
             .contact("01012341234")
@@ -45,17 +45,22 @@ public class StoreServiceTests {
 
     @Test
     public void updateTest(){
-        Optional<Store> store = storeService.getStore(3L);
-        // store = Store.builder()
-        //     .sno(3L)
-        //     .businessNo("1293812398")
-        //     .address("종로구 을지로")
-        //     .contact("01098765423")
-        //     .build();
 
-        // storeService.saveStore(store);
-        // log.info(store);
+        StoreDTO store = StoreDTO.builder()
+            .sno(12L)
+            .businessNo("1293812398")
+            .address("종로구 을지로")
+            .contact("01098765423")
+            .build();
+
+        storeService.modifyStore(store);
+        log.info(store);
         
+    }
+
+    @Test
+    public void removeTest(){
+        storeService.removeStore(4L);
     }
     
 }

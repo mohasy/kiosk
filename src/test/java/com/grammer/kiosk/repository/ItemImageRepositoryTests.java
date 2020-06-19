@@ -15,6 +15,83 @@ public class ItemImageRepositoryTests {
 
     @Test
     public void insertDummies(){
+         Item item = Item.builder().ino(1L).build();
+
+         ItemImage img = ItemImage.builder().item(item)
+            .mainCheck("Y")
+            .mname("치즈버거.jpg")
+            .build();
+
+            itemImageRepository.save(img);
+    }
+    @Test
+    public void insertDummies2(){
+         Item item = Item.builder().ino(1L).build();
+
+         ItemImage img = ItemImage.builder().item(item)
+            .mainCheck("N")
+            .mname("치즈버거2.jpg")
+            .build();
+
+            itemImageRepository.save(img);
+    }
+    @Test
+    public void insertDummies3(){
+         Item item = Item.builder().ino(2L).build();
+
+         ItemImage img = ItemImage.builder().item(item)
+            .mainCheck("Y")
+            .mname("새우버거.jpg")
+            .build();
+
+            itemImageRepository.save(img);
+    }
+    @Test
+    public void insertDummies4(){
+         Item item = Item.builder().ino(2L).build();
+
+         ItemImage img = ItemImage.builder().item(item)
+            .mainCheck("N")
+            .mname("새우버거2.jpg")
+            .build();
+
+            itemImageRepository.save(img);
+    }
+    @Test
+    public void insertDummies5(){
+         Item item = Item.builder().ino(3L).build();
+
+         ItemImage img = ItemImage.builder().item(item)
+            .mainCheck("Y")
+            .mname("치킨버거.jpg")
+            .build();
+
+            itemImageRepository.save(img);
+    }
+    @Test
+    public void insertDummies6(){
+         Item item = Item.builder().ino(3L).build();
+
+         ItemImage img = ItemImage.builder().item(item)
+            .mainCheck("N")
+            .mname("치킨버거2.jpg")
+            .build();
+
+            itemImageRepository.save(img);
+    }
+    @Test
+    public void insertDummies7(){
+         Item item = Item.builder().ino(4L).build();
+
+         ItemImage img = ItemImage.builder().item(item)
+            .mainCheck("Y")
+            .mname("불고기버거.jpg")
+            .build();
+
+            itemImageRepository.save(img);
+    }
+    @Test
+    public void insertDummies8(){
          Item item = Item.builder().ino(4L).build();
 
          ItemImage img = ItemImage.builder().item(item)

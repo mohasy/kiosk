@@ -1,46 +1,61 @@
 package com.grammer.kiosk.service;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.List;
+
+import javax.transaction.Transactional;
 
 import com.grammer.kiosk.domain.Store;
-import com.grammer.kiosk.repository.StoreRepository;
+import com.grammer.kiosk.dto.StoreDTO;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import lombok.extern.log4j.Log4j2;
+@Transactional
+public interface StoreService {
+    
 
-@Service
-@Log4j2
-public class StoreService {
+    public List<StoreDTO> getStoreList();
 
-    @Autowired
-    private StoreRepository storeRepository;
+    public StoreDTO getStore(Long sno);
 
-    public Set<Store> getStoreList() {
-        storeRepository.findAll().forEach(i -> {
-            log.info(i.toString());
-        });
+    public void saveStore(StoreDTO storeDTO);
 
-        return (Set<Store>) storeRepository.findAll();
+    public void modifyStore(StoreDTO storeDTO);
+
+    public void removeStore(Long sno);
+
+
+
+    //interface에 변환코드 선언. DTO-> entity
+    default Store bindToEntity(StoreDTO dto){
+
+        Store entity = Store.builder()
+        .sno(dto.getSno())
+        .businessNo(dto.getBusinessNo())
+        .address(dto.getAddress())
+        .contact(dto.getContact())
+        .sname(dto.getMname())
+        .openStatus(dto.getOpenStatus())
+        .workplace(dto.getWorkplace())
+        .build();
+
+        return entity;
     }
 
-    public Optional<Store> getStore(Long sno) {
-         Optional<Store> store = storeRepository.findById(sno);
-         return store;
-    }
+    //interface에 변환코드 선언.entity -> DTO
+    default StoreDTO bindToDTO(Store entity){
 
-    public void saveStore(Store store){
-        storeRepository.save(store);
-    }
+        StoreDTO dto = StoreDTO.builder()
+        .sno(entity.getSno())
+        .businessNo(entity.getBusinessNo())
+        .address(entity.getAddress())
+        .contact(entity.getContact())
+        .mname(entity.getSname())
+        .openStatus(entity.getOpenStatus())
+        .workplace(entity.getWorkplace())
+        .regdate(entity.getRegdate())
+        .moddate(entity.getModdate())
+        .build();
 
-    public void modifyStore(Store store){
-        storeRepository.updateStore(store);
-    }
-
-    public void deleteStore(Long sno){
-        storeRepository.deleteById(sno);
+        return dto;
     }
     
 }

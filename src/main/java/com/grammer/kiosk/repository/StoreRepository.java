@@ -13,8 +13,15 @@ public interface StoreRepository extends JpaRepository<Store,Long>{
     
     @Transactional
     @Modifying
-    @Query(value = "update Store s set s.businessNo = :#{#store.businessNo}, s.address = :#{#store.address}, s.contact = :#{#store.contact}, s.mname = :#{#store.mname}, s.workplace = :#{#store.workplace} where s.sno = :#{#store.sno}")
+    @Query(
+        value = "update Store s set s.businessNo = :#{#store.businessNo}, s.address = :#{#store.address}, s.contact = :#{#store.contact}, s.sname = :#{#store.sname}, s.workplace = :#{#store.workplace}, s.openStatus = :#{#store.openStatus} where s.sno = :#{#store.sno}")
     Integer updateStore(@Param("store")Store store);
+
+
+
+
+
+	
 
 
 }

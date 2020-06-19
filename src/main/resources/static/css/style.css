@@ -1133,11 +1133,11 @@ ol {
 -----------------------*/
 
 .hero-search {
-	height: 252px;
+	height: 200px;
 }
 
 .hero-search .filter-table {
-	height: 252px;
+	height: 200px;
 	width: 100%;
 	display: table;
 }
@@ -1222,6 +1222,8 @@ ol {
 
 .recipe-item {
 	margin-bottom: 40px;
+	max-inline-size: 350px;
+	margin: 15px;
 }
 
 .recipe-item a {
@@ -2300,6 +2302,10 @@ ol {
 	}
 	.blog-section .blog-pic {
 		padding: 0;
+	}
+	.cat-title{
+		color: #323232;
+		padding-bottom: 30px;
 	}
 }
 
