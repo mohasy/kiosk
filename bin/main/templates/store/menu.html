@@ -3,7 +3,7 @@
     <header th:replace="/includes/header"/>
 
     <!-- Hero Search Section Begin -->
-    <div class="hero-search set-bg" data-setbg="/img/search-bg.jpg">
+    <!-- <div class="hero-search set-bg" data-setbg="/img/search-bg.jpg">
         <div class="container">
             <div class="filter-table">
                 <form action="#" class="filter-search">
@@ -20,7 +20,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Hero Search Section End -->
     
     <!-- Recipe Section Begin -->
@@ -33,15 +33,17 @@
                     <div th:with="type = ${item.type eq 'hamburger'}">
                         <div th:if="${type}">
                             <th:block class="col-lg-4 col-sm-6">
-                                <div class="recipe-item">
-                                    <a href="#" th:onclick="'javascript:modalOpen('+this+');'"><img th:src="@{'/img/hamburger/'+${item.images.get(0).mname}}" alt=""> </a>
+                                <div class="recipe-item" th:data-ino = "${item.ino}" th:data-iname= "${item.iname}" th:data-content= "${item.content}" th:data-img= "${item.images.get(0).mname}" th:data-price= "${item.price}">
+                                    <div th:each="img : ${item.images}">
+                                        <p th:if="${img.mainCheck eq 'Y'}" th:with="mainImg = ${img.mname}"></p>
+                                    </div>   
+                                        <a href="#" th:onclick="modalOpen(event)"><img th:src="@{'/img/hamburger/'+${item.images.get(0).mname}}" alt=""> </a>
                                     <div class="ri-text">
                                         <div class="cat-name">Best</div>
                                         <a href="#">
                                             <h4 th:text="${item.iname}"></h4>
                                         </a>
                                         <p th:text="${item.price}+' won'"></p>
-                                        <p th:text="${item.content}"></p>
                                     </div>
                                 </div>
                             </th:block>
@@ -49,9 +51,6 @@
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     </section>
     <!-- Recipe Section End -->
@@ -63,9 +62,10 @@
         </div>
         <div class="container po-relative">
             <div class="plus-icon">
-                <i class="fa fa-plus"></i>
+                <!-- <i class="fa fa-plus"></i> -->
+                <a href="#"><img src="/img/cart.png"></a>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-7">
                     <div class="cfr-item">
                         <div class="cfr-item-img set-bg" data-setbg="/img/cat-feature/big-1.jpg">
@@ -171,14 +171,19 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
     <!-- Categories Feature Recipe Section End -->
 
+    <!-- <nav class="bottomNav">
+        <button type="button" class="cart btn btn-warning">장바구니</button>
+    </nav> -->
+
 
     <!--modal-->
-    <div class="modal fade" tabindex="-1" role="dialog">
+    
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -187,49 +192,238 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
-              <img th:src="@{'/img/hamburger/'+${itemList.get(0).images.get(0).mname}}">
-              <p th:text="${itemList.get(0).iname}"></p>
-              <p>[[${itemList.get(0).price}]] 원</p>
-              <p>[[${itemList.get(0).content}]]</p>
+            <div class="detail modal-body" >
+              
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Order</button>
-              <button type="button" class="btn btn-secondary" th:onclick="'javascript:modalClose('+this+');'" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" th:onclick="'javascript:addCart(event);'">장바구니 담기</button>
+              <button type="button" class="btn btn-secondary" th:onclick="'javascript:modalClose(event);'" data-dismiss="modal">취소</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+      <!--cart modal-->
+    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">장바구니</h5>
+              <button type="button" class="close" th:onclick="'javascript:modalClose(event);'" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="cart modal-body">
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">주문하기</button>
+              <button type="button" class="btn btn-secondary" th:onclick="'javascript:modalClose('+this+');'" data-dismiss="modal">취소</button>
             </div>
           </div>
         </div>
       </div>
 
+      <form id="actionForm">
 
-      
+      </form>
+
 
       <script type="text/javascript" th:inline="javascript">
 
-       
-        
-          var modalOpen = function(e){
+        var didScroll;
+        var lastScrollTop = 0; 
+        var delta = 5; // 동작의 구현이 시작되는 위치 
+        var navbarHeight = $('header').outerHeight(); // 영향을 받을 요소를 선택
+        var fixBoxHeight = $('.bottomNav').offsetHeight;
+        var actionForm = $('#actionForm');
+
+        console.log(navbarHeight);
+        console.log(fixBoxHeight);
+
+        //스크롤을 헤더만큼 내리면 CSS실행 헤더보다 낮아지면 취소...........
+
+        //스크롤을 움직이면
+        $(window).scroll(function(event){ 
+            didScroll = true; 
+        });
+
+        setInterval(function() { 
+            if (didScroll) { 
+                hasScrolled(); 
+                didScroll = false; 
+            } 
+        }, 250); // 0.25초마다 스크롤 여부 체크
+
+
+        function hasScrolled() { 
+            // 동작을 구현 
+            var st = $(this).scrollTop(); //현재 스크롤의 위치를 저장
+
+            if (Math.abs(lastScrollTop - st) <= delta)  //설정한 delta 값보다 더 스크롤 되었는지 확인
+                return;
+
+            // If current position > last position AND scrolled past navbar... 
+            if (st > lastScrollTop && st > navbarHeight){ 
+                // Scroll Down 
+                $('header').removeClass('nav-down').addClass('nav-up'); 
+                
+            } else { 
+                // Scroll Up 
+                // If did not scroll past the document (possible on mac)... 
+                if(st + $(window).height() < $(document).height()) { 
+                    $('header').removeClass('nav-up').addClass('nav-down'); 
+                } 
+            }
+
+            lastScrollTop = st;
+            
+        }
+
+        $(".plus-icon").click(function(){
+            console.log("cart click..");
+
+            $("#cartModal").modal("show");
+
+        });
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+
+            console.log("name: "+name);
+            console.log("decodedCookie: "+decodedCookie);
+            console.log("ca: "+ca);
+
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                console.log("c1: "+c);
+                console.log(ca.length);
+
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                    console.log("c2: "+c);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+
+        var addCart = function(e){
+            console.log("add cart.."+ e);
+
+            var targetDiv = $(e.target).closest(".detail");
+            var no = $("input[name='num']").val();
+            var cart = $(".cart");
+
+            console.log(targetDiv);
+            console.log(no);
+
+            getCookie("no"+no);
+
+            
+            
+
+            actionForm.append("<input type='hidden' name='ino' value='"+no +"'>")
+            .attr("action","/store/menu")
+            .attr("method","post");
+			//.submit();
+
+
+        };
+
+        var modalOpen = function(e){
             console.log("click......"+e);
             
-            $(".modal").modal("show");
+            var targetDiv = $(e.target).closest(".recipe-item");
+            var modalBody = $(".detail");
+            var ino = targetDiv.data("ino");
+            var iname = targetDiv.data("iname");
+            var content = targetDiv.data("content");
+            var price = targetDiv.data("price");
+            var img = targetDiv.data("img");
+            var str="";
+
+            console.log(targetDiv);
+            console.log("img: "+img);
+            console.log("content: "+content);
+
+            //str += "<img src='/img/hamburger/"+img+"'>";
+            str += "<div id='carouselExampleControls' class='carousel slide' data-ride='arousel'>";
+            str += "<div class='carousel-inner'>";
+            str += "<div class='carousel-item active'>";
+            str += "<img class='d-block w-100' src='/img/hamburger/"+img+"' alt='slide'>";
+            str += "</div>";
+
+            //str += "<div th:each='img : ${itemList.images}'>";
+            str += "<div class='carousel-item'>";
+            str += "<img class='d-block w-100' src='/img/hamburger/"+img+"' alt='slide'>";
+            str += "</div>";
+            //str += "</div>";
+          
+            str += "</div>";
+            str += "<a class='carousel-control-prev' href='#carouselExampleControls' role='button' data-slide='prev'>";
+            str += "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
+            str += "<span class='sr-only'>Previous</span>";
+            str += "</a>";
+            str += "<a class='carousel-control-next' href='#carouselExampleControls' role='button' data-slide='next'>";
+            str += "<span class='carousel-control-next-icon' aria-hidden='true'></span>";
+            str += "<span class='sr-only'>Next</span>";
+            str += "</a>";
+            str += "</div>";
+            str += "<p>"+iname+"</p>";
+            str += "<p>"+price+" 원</p>";
+            str += "<p>"+content+"</p>";
+            str += "<input type='hidden' name='num' value='"+ino+"'>";
+
+            modalBody.html(str);
+
+            //console.log(str)
+
+
+            $("#detailModal").modal("show");
+
+            console.log("modal: "+$("#detailModal").html);
+            
             $('html, body').css({'overflow': 'hidden', 'height': '100%'});
             
-            $('#element').on('scroll touchmove mousewheel', function(event) {     
-                event.preventDefault();     
-                event.stopPropagation();     
+             $('#element').on('scroll touchmove mousewheel', function(event) {     
+                 event.preventDefault();     
+                 event.stopPropagation();     
                 
-                return false; 
-            });
+                 return false; 
+             });
 
-          };
+        };
 
-          var modalClose = function(e){
+        var modalClose = function(e){
             console.log("click......."+e);
 
             $('html, body').css({'overflow': 'auto', 'height': '100%'});
             $('#element').off('scroll touchmove mousewheel');
 
-          }
+        }
+
+        function modalAnimate(x) {
+            $('.modal .modal-dialog').attr('class', 'modal-dialog ' + x + ' animated');
+            console.log("x: "+x);
+            console.log($('.modal'));
+        };
+
+        $('.modal').on('show.bs.modal', function (e) {
+            
+            modalAnimate('fadeInUp');
+        })
+
+        $('.modal').on('hide.bs.modal', function (e) {
+            
+            modalAnimate('fadeOutDown');
+        })
 
         
 

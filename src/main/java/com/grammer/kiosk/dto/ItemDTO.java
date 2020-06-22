@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grammer.kiosk.domain.Store;
 
 import lombok.AllArgsConstructor;
@@ -11,16 +12,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"store","images","description","type","regdate","moddate"})
 public class ItemDTO {
 
     private Long ino;
 
+    //@JsonIgnore
     private Store store; //가게 넘버
 
     private String iname;//상품 이름
@@ -33,8 +37,9 @@ public class ItemDTO {
 
     private String type; //카테고리
 
-    private String state;
+    private String state;//주문 가능 여부
 
+    //@JsonIgnore
     private List<ItemImageDTO> images;
 
     private LocalDateTime regdate, moddate;
@@ -45,5 +50,7 @@ public class ItemDTO {
         }
         this.images.add(image);
     }
+
+    
     
 }

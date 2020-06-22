@@ -26,6 +26,57 @@
 10. Other Pages Style
 
 -------------------------------------------------------------------*/
+body { 
+	padding-top: 40px;/* 헤더높이만큼 여백 부여함*/
+} 
+.main-menu { 
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	width: 100%;
+	height: 60px; 
+	/* background: #e6e6e6;  */
+	transition: top 0.2s ease-in-out; 
+	padding-top: 20px;
+}  
+.nav-up { 
+	top: -60px; /*헤더높이만큼*/
+}
+
+.bottomNav {
+	bottom: -100px; 
+	background:#e6e6e6; 
+	transition:bottom .2s;
+	position: fixed; 
+	left: 0; 
+	bottom: 0; 
+	width: 100%; 
+	height: 100px; 
+	line-height: 52px; 
+	color: #111; 
+	text-align: left;
+}
+.bottomNav.show {
+	bottom: 0; 
+	background:#111;
+}
+
+article {padding: 52px 3%;}
+article .block {padding: 20px; min-height: 500px;}
+article .block p {line-height: 22px; color: #fff; font-size: 16px; font-weight: 600;}
+article .block:nth-child(2n+1) {background: #999;}
+article .block:nth-child(2n) {background: #222;}
+
+.modal.fade{
+	opacity:1;
+  }
+
+.modal.fade .modal-dialog {
+	-webkit-transform: translate(0);
+	-moz-transform: translate(0);
+	transform: translate(0);
+}
+
 
 /*----------------------------------------*/
 
@@ -309,16 +360,17 @@ ol {
 
 .header-section {
 	padding-top: 65px;
-	padding-bottom: 30px;
 }
 
 .header-section .logo {
 	text-align: center;
-	margin-bottom: 92px;
+	margin-bottom: 30px;
 }
 
 .header-section .logo a {
 	display: inline-block;
+	width: 300px;
+	/* height: 3500px; */
 }
 
 .header-section .nav-menu {
@@ -327,6 +379,7 @@ ol {
 
 .header-section .nav-menu .main-menu {
 	text-align: center;
+	padding-bottom: 20px;
 }
 
 .header-section .nav-menu .main-menu ul li {
@@ -582,6 +635,7 @@ ol {
 	position: absolute;
 	top: -57px;
 	left: 0;
+
 }
 
 .top-recipe .section-title h5 {
@@ -591,6 +645,10 @@ ol {
 
 .top-recipe .po-relative {
 	position: relative;
+}
+
+.plus-icon img{
+	width: 65px;
 }
 
 .top-recipe .po-relative .plus-icon {
@@ -805,6 +863,7 @@ ol {
 	position: absolute;
 	top: -57px;
 	left: 0;
+	
 }
 
 .feature-recipe .section-title h5 {
@@ -1223,16 +1282,18 @@ ol {
 .recipe-item {
 	margin-bottom: 40px;
 	max-inline-size: 350px;
-	margin: 15px;
+	margin: 0px auto;
+	width: 280px;
+	height: 100%;
+	text-align: left;
+	display: block;
+
 }
 
-.recipe-item a {
-	display: block;
-	margin-bottom: 34px;
-}
 
 .recipe-item a img {
 	min-width: 100%;
+	height: auto;
 }
 
 .recipe-item .ri-text .cat-name {
@@ -1255,6 +1316,7 @@ ol {
 }
 
 .recipe-section {
+	padding-top: 0px;
 	padding-bottom: 160px;
 }
 
