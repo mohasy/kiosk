@@ -43,25 +43,26 @@ public class KakaoPay {
         params.add("partner_order_id", "1001");
         params.add("partner_user_id", "gorany");
         if(cnt>1){
-            params.add("item_name", name+"외 "+(cnt-1)+"개");
+            params.add("item_name", name+" 외 "+(cnt-1)+"개");
         }else{
             params.add("item_name", name);
         }
         params.add("quantity", Integer.toString(cnt));
         params.add("total_amount", Integer.toString(total));
         params.add("tax_free_amount", "100");
-        params.add("approval_url", "http://localhost:8080/kakaoPaySuccess");
-        params.add("cancel_url", "http://localhost:8080/kakaoPayCancel");
-        params.add("fail_url", "http://localhost:8080/kakaoPaySuccessFail");
+        params.add("approval_url", "https://localhost:8080/kakaoPaySuccess");
+        params.add("cancel_url", "https://localhost:8080/kakaoPayCancel");
+        params.add("fail_url", "https://localhost:8080/kakaoPaySuccessFail");
  
          HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
          log.info(params);
+
  
         try {
             payRequestVO = restTemplate.postForObject(new URI(HOST + "/v1/payment/ready"), body, PayRequestVO.class);
             
-            log.info("" + payRequestVO);
+            log.info("payRequestVO: " + payRequestVO);
             
             if(url.equals("pc")){
                 return payRequestVO.getNext_redirect_pc_url();
@@ -81,7 +82,7 @@ public class KakaoPay {
         
     }
 
-    public PayResponseVO kakaoPayInfo(String pg_token) {
+    public PayResponseVO kakaoPayInfo(String pg_token, String total) {
  
         log.info("KakaoPayInfoVO............................................");
         log.info("-----------------------------");
@@ -101,7 +102,9 @@ public class KakaoPay {
         params.add("partner_order_id", "1001");
         params.add("partner_user_id", "gorany");
         params.add("pg_token", pg_token);
-        params.add("total_amount", "2100");
+        params.add("total_amount", total);
+
+        log.info(params);
         
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
         
