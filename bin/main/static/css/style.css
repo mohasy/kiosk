@@ -77,6 +77,70 @@ article .block:nth-child(2n) {background: #222;}
 	transform: translate(0);
 }
 
+.table-image {
+  
+	thead {
+	  td, th {
+		border: 0;
+		color: #666;
+		font-size: 0.8rem;
+	  }
+	}
+	
+	td, th {
+	  vertical-align: middle;
+	  text-align: center;
+	  
+	}
+		  .qty {
+			max-width: 2rem;
+			
+	
+		}
+  }
+
+  .pay{
+	border: none;
+	width: 80px;
+	height: 30px;
+	cursor: pointer;
+
+  }
+
+  .modal-dialog.modal-fullsize {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+  }
+  .modal-content.modal-fullsize {
+	height: auto;
+	min-height: 100%;
+	border-radius: 0; 
+	min-width: 80vw;
+    width: auto;
+  }
+  .numBox{
+	  width: 50px;
+	  display: inline-block;
+  }
+  
+
+  .qty button { 
+	  font-size:26px; 
+	  border:none; 
+	  background:none; 
+	}
+  
+  .price {
+	margin-left: 1rem;
+  }
+  
+  .modal-footer {
+	padding-top: 0rem;
+  }
+
+
 
 /*----------------------------------------*/
 

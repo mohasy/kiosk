@@ -43,7 +43,7 @@
                                         <a href="#">
                                             <h4 th:text="${item.iname}"></h4>
                                         </a>
-                                        <p th:text="${item.price}+' won'"></p>
+                                        <p th:text="${item.price}+' 원'"></p>
                                     </div>
                                 </div>
                             </th:block>
@@ -202,9 +202,8 @@
           </div>
         </div>
       </div>
-    
 
-      <!--cart modal-->
+      <!-- cart modal
     <div class="modal fade" id="cartModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -215,6 +214,7 @@
               </button>
             </div>
             <div class="cart modal-body">
+
               
             </div>
             <div class="modal-footer">
@@ -223,24 +223,85 @@
             </div>
           </div>
         </div>
+      </div> -->
+
+      <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+              <h5 class="modal-title" id="exampleModalLabel">
+                장바구니
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-image">
+                <thead>
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col">메뉴</th>
+                    <th scope="col">가격</th>
+                    <th scope="col">수량</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">삭제</th>
+                  </tr>
+                </thead>
+                <tbody id = "cartContent">
+                    
+                </tbody>
+              </table> 
+              
+              <div class="d-flex justify-content-end">
+                <h5>총 수량: <span class="count text-success">0</span></h5>&nbsp&nbsp&nbsp&nbsp&nbsp
+                <h5>총 가격: <span class="price text-success">0 원</span></h5>
+              </div>
+            </div>
+            <div class="modal-footer border-top-0 d-flex justify-content-between">
+                
+              <input type="image" class="pay" src="/img/kakaopay.png">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+              
+            </div>
+          </div>
+        </div>
       </div>
 
-      <form id="actionForm">
+
+      <form id="actionForm" >
 
       </form>
 
+    <script type="text/javascript" th:inline="javascript">
 
-      <script type="text/javascript" th:inline="javascript">
-
+    $(function(){
         var didScroll;
         var lastScrollTop = 0; 
         var delta = 5; // 동작의 구현이 시작되는 위치 
         var navbarHeight = $('header').outerHeight(); // 영향을 받을 요소를 선택
         var fixBoxHeight = $('.bottomNav').offsetHeight;
-        var actionForm = $('#actionForm');
+        var device;
+        
+        function isMobile() {
+            return navigator.userAgent.indexOf('Mobi') > -1;
+        }
+
+        if(isMobile()){
+            console.log("mobile");
+            device= "mobile";
+
+        }else{
+            console.log("pc");
+            device= "pc";
+        }
+
+
 
         console.log(navbarHeight);
         console.log(fixBoxHeight);
+
+        readToItem();
 
         //스크롤을 헤더만큼 내리면 CSS실행 헤더보다 낮아지면 취소...........
 
@@ -278,8 +339,98 @@
             }
 
             lastScrollTop = st;
-            
         }
+
+
+                
+        $('.pay').click(function(e){
+            var form = $("#actionForm");
+            e.defaultPrevented
+            console.log("click..");
+            var total = 0;
+            var cnt = 0;
+            var name = "";
+
+
+            for ( var i = 0, len = localStorage.length; i < len; ++i ) {
+                var loadedToDos = localStorage.getItem(localStorage.key(i));
+                console.log(loadedToDos);
+
+                if (loadedToDos !== null) {
+                    const parsedToDos = JSON.parse(loadedToDos);
+
+                    name = parsedToDos['name'];
+                    cnt += JSON.parse(parsedToDos['qua']);
+                    total += JSON.parse(parsedToDos['no'])*JSON.parse(parsedToDos['price']);
+                }
+            }
+            console.log("total: "+total+", cnt: "+cnt+", name: "+name);
+            
+
+            form.append("<input type='hidden' name='url' value='"+device+"'>")
+            .append("<input type='hidden' name='cnt' value='"+cnt+"'>")
+            .append("<input type='hidden' name='total' value='"+total+"'>")
+            .append("<input type='hidden' name='name' value='"+name+"'>")
+            .attr("action","/kakaoPay")
+            .attr("method","post")
+            .submit();
+            
+        });
+        
+
+        $(".plus").click(function(){
+            console.log("plus"+ this.id);
+            var id = this.id;
+            var num = $("#input"+id).val();
+            var plusNum = Number(num) + 1;
+            console.log(id);
+            
+            $("#input"+id).val(plusNum); 
+            var price = $("#price"+id).html();
+
+            var total = $("#input"+id).val() * price;
+            var realTotal = parseInt(price) + parseInt($(".price").html());
+
+            $("#totalPrice"+id).html(total);
+
+            $(".price").html(realTotal+ "원");
+            var getItem = JSON.parse(localStorage.getItem(id));
+
+            var qua = {"name":getItem['name'],"price":getItem['price'],"img":getItem['img'], "no":getItem['no'],"qua":parseInt(getItem['qua'])+1};
+            localStorage.setItem(id, JSON.stringify(qua));
+
+           
+        });
+        
+        $(".minus").click(function(e){
+            console.log("minus"+this.id);
+            var id = this.id;
+            var num = $("#input"+id).val();
+            var minusNum = Number(num) - 1;
+
+            if(minusNum <= 0) {
+                $("#input"+id).val(num);
+            } else {
+                $("#input"+id).val(minusNum);          
+            }
+
+            var price = $("#price"+id).html();
+            var total = $("#input"+id).val() * price;
+            $("#totalPrice"+id).html(total);
+
+            if(num > 1){
+                var realTotal = parseInt($(".price").html()) - parseInt(price);
+                $(".price").html(realTotal+ "원");
+            }
+
+            var getItem = JSON.parse(localStorage.getItem(id));
+
+            var qua = {"name":getItem['name'],"price":getItem['price'],"img":getItem['img'], "no":getItem['no'],"qua":parseInt(getItem['qua'])-1};
+            localStorage.setItem(id, JSON.stringify(qua));
+            
+        });
+
+
 
         $(".plus-icon").click(function(){
             console.log("cart click..");
@@ -288,147 +439,199 @@
 
         });
 
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
+        $(".btn-danger").click(function(e){
+            var key = this.id;
+            var itemId = "item"+key;
+            var total = 0;
+            console.log(key);
+            deleteItem(key); //해당  key를 지움
 
-            console.log("name: "+name);
-            console.log("decodedCookie: "+decodedCookie);
-            console.log("ca: "+ca);
+            $("#"+itemId).html(""); //장바구니에 해당 상품을 지움
 
-            for(var i = 0; i <ca.length; i++) {
-                var c = ca[i];
-                console.log("c1: "+c);
-                console.log(ca.length);
+            for ( var i = 0, len = localStorage.length; i < len; ++i ) {
+                var loadedToDos = localStorage.getItem(localStorage.key(i));
+                const parsedToDos = JSON.parse(loadedToDos);
+                console.log(loadedToDos);
 
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                    console.log("c2: "+c);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
+                if (loadedToDos !== null) {
+                    total += JSON.parse(parsedToDos['price']);
                 }
             }
-            return "";
+            
+            $(".price").html(total+" 원");
+        });
+
+        function readToItem(){
+            var cart = $("#cartContent");
+            var realTotal=0; //총 가격
+            var total=0;
+            var cnt=0;
+
+            for ( var i = 0, len = localStorage.length; i < len; ++i ) {
+                var loadedToDos = localStorage.getItem(localStorage.key(i));
+                console.log(loadedToDos);
+
+                if (loadedToDos !== null) {
+                    const parsedToDos = JSON.parse(loadedToDos);
+                    // realTotal += JSON.parse(parsedToDos['price']);
+                    var str = "";
+                    console.log(parsedToDos['name']);
+                    console.log(parsedToDos['price']);
+                    console.log(parsedToDos['img']);
+                    
+                    str += "<tr id='item"+parsedToDos['no']+"'>";
+                    str += "<td class='w-25'>";
+                    str += "<img src='/img/hamburger/"+parsedToDos['img']+"' class='img-fluid img-thumbnail' alt='Sheep'>";
+                    str += "</td>";
+                    str += "<td>"+parsedToDos['name']+"</td>";
+                    str += "<td id='price"+parsedToDos['no']+"'>"+parsedToDos['price']+"</td>";
+                    str += "<td class='qty'><button type='button' id='"+parsedToDos['no']+"' class='plus'>+</button>";
+                    str += "<input type='number' class='numBox form-control' min='1' value='"+parsedToDos['qua']+"' id='input"+parsedToDos['no']+"' readonly='readonly'>";
+                    str += "<button type='button' id='"+parsedToDos['no']+"' class='minus'>-</button></td>";
+                    str += "<td id='totalPrice"+parsedToDos['no']+"'>"+parsedToDos['price']*parsedToDos['qua']+"</td>";
+                    str += "<td>";
+                    str += "<a href='#' id='"+parsedToDos['no']+"' class='btn btn-danger btn-sm'>";
+                    str += "<i class='fa fa-times'></i></a>";
+                    str += "</td>";
+                    str += "</tr>";
+                        
+                    cart.append(str);
+
+                    realTotal += parseInt($("#totalPrice"+parsedToDos['no']).html());
+                    cnt += JSON.parse(parsedToDos['qua']);
+                    
+                }
+            }
+            console.log("cnt: "+cnt);
+             
+            $(".price").html(realTotal+" 원");
+            $(".count").html(cnt);
+
         }
+    });
 
 
-        var addCart = function(e){
-            console.log("add cart.."+ e);
+    var addCart = function(e){
+        console.log("add cart.."+ e);
+        var no = $("input[name='num']").val();
+        var actionForm = $('#actionForm');
 
-            var targetDiv = $(e.target).closest(".detail");
+        saveToCart();
+
+        actionForm.append("<input type='hidden' name='ino' value='"+no+"'>");
+        actionForm.attr("action","/store/menu");
+        actionForm.attr("method","post");
+        actionForm.submit();
+    };
+
+        function saveToCart(){
+            console.log("add cart..");
+
             var no = $("input[name='num']").val();
-            var cart = $(".cart");
+            var name = $("input[name='name']").val();
+            var price = $("input[name='price']").val();
+            var img = $("input[name='img']").val();
+            var item;
 
-            console.log(targetDiv);
-            console.log(no);
+            if(!localStorage.getItem(no)){
+                item = {"name":name,"price":price,"img":img, "no":no, "qua":1};
 
-            getCookie("no"+no);
+            }else{
+                var getItem = localStorage.getItem(no);
+                //alert(JSON.parse(getItem)['qua']);
+                item = {"name":name,"price":price,"img":img, "no":no, "qua":parseInt(JSON.parse(getItem)['qua'])+1};
 
-            
-            
+            }
 
-            actionForm.append("<input type='hidden' name='ino' value='"+no +"'>")
-            .attr("action","/store/menu")
-            .attr("method","post");
-			//.submit();
-
-
-        };
-
-        var modalOpen = function(e){
-            console.log("click......"+e);
-            
-            var targetDiv = $(e.target).closest(".recipe-item");
-            var modalBody = $(".detail");
-            var ino = targetDiv.data("ino");
-            var iname = targetDiv.data("iname");
-            var content = targetDiv.data("content");
-            var price = targetDiv.data("price");
-            var img = targetDiv.data("img");
-            var str="";
-
-            console.log(targetDiv);
-            console.log("img: "+img);
-            console.log("content: "+content);
-
-            //str += "<img src='/img/hamburger/"+img+"'>";
-            str += "<div id='carouselExampleControls' class='carousel slide' data-ride='arousel'>";
-            str += "<div class='carousel-inner'>";
-            str += "<div class='carousel-item active'>";
-            str += "<img class='d-block w-100' src='/img/hamburger/"+img+"' alt='slide'>";
-            str += "</div>";
-
-            //str += "<div th:each='img : ${itemList.images}'>";
-            str += "<div class='carousel-item'>";
-            str += "<img class='d-block w-100' src='/img/hamburger/"+img+"' alt='slide'>";
-            str += "</div>";
-            //str += "</div>";
-          
-            str += "</div>";
-            str += "<a class='carousel-control-prev' href='#carouselExampleControls' role='button' data-slide='prev'>";
-            str += "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
-            str += "<span class='sr-only'>Previous</span>";
-            str += "</a>";
-            str += "<a class='carousel-control-next' href='#carouselExampleControls' role='button' data-slide='next'>";
-            str += "<span class='carousel-control-next-icon' aria-hidden='true'></span>";
-            str += "<span class='sr-only'>Next</span>";
-            str += "</a>";
-            str += "</div>";
-            str += "<p>"+iname+"</p>";
-            str += "<p>"+price+" 원</p>";
-            str += "<p>"+content+"</p>";
-            str += "<input type='hidden' name='num' value='"+ino+"'>";
-
-            modalBody.html(str);
-
-            //console.log(str)
-
-
-            $("#detailModal").modal("show");
-
-            console.log("modal: "+$("#detailModal").html);
-            
-            $('html, body').css({'overflow': 'hidden', 'height': '100%'});
-            
-             $('#element').on('scroll touchmove mousewheel', function(event) {     
-                 event.preventDefault();     
-                 event.stopPropagation();     
-                
-                 return false; 
-             });
-
-        };
-
-        var modalClose = function(e){
-            console.log("click......."+e);
-
-            $('html, body').css({'overflow': 'auto', 'height': '100%'});
-            $('#element').off('scroll touchmove mousewheel');
-
+            localStorage.setItem(no, JSON.stringify(item));
         }
 
-        function modalAnimate(x) {
-            $('.modal .modal-dialog').attr('class', 'modal-dialog ' + x + ' animated');
-            console.log("x: "+x);
-            console.log($('.modal'));
-        };
 
-        $('.modal').on('show.bs.modal', function (e) {
+
+        function deleteItem(key){
+
+            localStorage.removeItem(key);
             
-            modalAnimate('fadeInUp');
-        })
+        }
 
-        $('.modal').on('hide.bs.modal', function (e) {
-            
-            modalAnimate('fadeOutDown');
-        })
 
+
+    var modalOpen = function(e){
+        console.log("click......"+e);
         
+        var targetDiv = $(e.target).closest(".recipe-item");
+        var modalBody = $(".detail");
+        var ino = targetDiv.data("ino");
+        var iname = targetDiv.data("iname");
+        var content = targetDiv.data("content");
+        var price = targetDiv.data("price");
+        var img = targetDiv.data("img");
+        var str="";
+
+        console.log(targetDiv);
+        console.log("img: "+img);
+        console.log("content: "+content);
+
+        //str += "<img src='/img/hamburger/"+img+"'>";
+        str += "<div id='carouselExampleControls' class='carousel slide' data-ride='arousel'>";
+        str += "<div class='carousel-inner'>";
+        str += "<div class='carousel-item active'>";
+        str += "<img class='d-block w-100' src='/img/hamburger/"+img+"' alt='slide'>";
+        str += "</div>";
+
+        //str += "<div th:each='img : ${itemList.images}'>";
+        str += "<div class='carousel-item'>";
+        str += "<img class='d-block w-100' src='/img/hamburger/"+img+"' alt='slide'>";
+        str += "</div>";
+        //str += "</div>";
+        
+        str += "</div>";
+        str += "<a class='carousel-control-prev' href='#carouselExampleControls' role='button' data-slide='prev'>";
+        str += "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
+        str += "<span class='sr-only'>Previous</span>";
+        str += "</a>";
+        str += "<a class='carousel-control-next' href='#carouselExampleControls' role='button' data-slide='next'>";
+        str += "<span class='carousel-control-next-icon' aria-hidden='true'></span>";
+        str += "<span class='sr-only'>Next</span>";
+        str += "</a>";
+        str += "</div>";
+        str += "<p>"+iname+"</p>";
+        str += "<p>"+price+" 원</p>";
+        str += "<p>"+content+"</p>";
+        str += "<input type='hidden' name='num' value='"+ino+"'>";
+        str += "<input type='hidden' name='name' value='"+iname+"'>";
+        str += "<input type='hidden' name='price' value='"+price+"'>";
+        str += "<input type='hidden' name='img' value='"+img+"'>";
+
+        modalBody.html(str);
+
+        //console.log(str)
 
 
+        $("#detailModal").modal("show");
 
+        //console.log("modal: "+$("#detailModal").html);
+        
+        $('html, body').css({'overflow': 'hidden', 'height': '100%'});
+        
+            $('#element').on('scroll touchmove mousewheel', function(event) {     
+                event.preventDefault();     
+                event.stopPropagation();     
+            
+                return false; 
+            });
+
+    };
+
+    var modalClose = function(e){
+        console.log("click......."+e);
+
+        $('html, body').css({'overflow': 'auto', 'height': '100%'});
+        $('#element').off('scroll touchmove mousewheel');
+
+    }
+
+    
       </script>
 
     <footer th:replace="/includes/footer"/>

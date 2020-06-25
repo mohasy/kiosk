@@ -3,7 +3,9 @@ package com.grammer.kiosk.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -42,20 +44,8 @@ public class StoreController {
 
         List<ItemDTO> itemList = itemService.getItems();
 
-        Cookie[] cookies = request.getCookies();
-
-        if(!(cookies==null)){
-            // log.info("쿠키 갯수: "+cookies.length);
-            
-            // for(int i=0; i<cookies.length; i++){
-            //     log.info(i+"번 쿠키 이름: "+cookies[i].getName());
-            //     try {
-            //         log.info(i + "번 쿠키 값: " + URLDecoder.decode(cookies[i].getValue(), "UTF-8"));
-            //     } catch (UnsupportedEncodingException e) {
-            //         e.printStackTrace();
-            //     }
-            // }
-        }
+        //Cookie[] cookies = request.getCookies();
+        
         model.addAttribute("itemList", itemList);
     }
 
@@ -67,16 +57,23 @@ public class StoreController {
         ItemDTO item = itemService.getItem(Long.parseLong(ino));
         log.info("item: " + item.toString());
 
+        String name = URLEncoder.encode(item.getIname());
+        String content = URLEncoder.encode(item.getContent());
+        String price = Long.toString(item.getPrice());
+        String img = URLEncoder.encode(item.getImages().get(0).getMname());
+        
+        
         Cookie setCookie;
+        String cookieName[] = { ino + "name", ino + "content", ino + "price" , ino + "img"};
+        String cookieValue[] = { name, content, price ,img};
 
-        try {
-            setCookie = new Cookie("no" + ino, URLEncoder.encode(item.toString(), "utf-8"));
+        for (int i = 0; i < cookieName.length; i++) {
+            if (cookieValue[i] != null) {
+                setCookie = new Cookie(cookieName[i], cookieValue[i]);
 
-            setCookie.setMaxAge(60*60*2); // 기간을 하루로 지정(60초 * 60분 * 2시간)
-            response.addCookie(setCookie); // response에 Cookie 추가
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+                setCookie.setMaxAge(60 * 60 * 2); // 기간을 하루로 지정(60초 * 60분 * 2시간)
+                response.addCookie(setCookie); // response에 Cookie 추가
+            }
         }
 
 
